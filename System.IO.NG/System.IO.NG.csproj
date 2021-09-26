@@ -18,10 +18,12 @@ It also solves Directory.Move() not working on Linux when source and destination
 
   <ItemGroup>
     <PackageReference Include="CmdOneLiner.NET" Version="1.0.2" />
+    <PackageReference Include="Humanizer.Core" Version="2.11.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\CmdOneLiner.NET\CmdOneLiner.NET\CmdOneLiner.NET.csproj" />
+    <ProjectReference Include="..\..\Statistics\Statistics.csproj" />
   </ItemGroup>
 
 </Project>

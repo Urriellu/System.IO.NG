@@ -185,7 +185,7 @@ namespace System.IO.NG.Tests
             Stopwatch swTotal = new Stopwatch();
             string pathBigFileHighPrio = Path.Combine(Path.GetTempPath(), $"{nameof(SystemIONGTests)}-{nameof(T02_IOPriority)}", $"{DateTime.Now:yyyyMMdd-HHmmssfff}-big-file-highrio.txt");
             string pathBigFileLowPrio = Path.Combine(Path.GetTempPath(), $"{nameof(SystemIONGTests)}-{nameof(T02_IOPriority)}", $"{DateTime.Now:yyyyMMdd-HHmmssfff}-big-file-lowrio.txt");
-            
+
             Task t1 = Task.Factory.StartNew(() =>
             {
                 try { Thread.CurrentThread.Name = $"Copy big file high priority"; }
@@ -196,7 +196,7 @@ namespace System.IO.NG.Tests
                 FileNG.Copy(pathBigFile, pathBigFileHighPrio, iopriority: IOPriorityClass.L03_HighEffort);
                 swHighPrio.Stop();
             });
-            
+
             Task t2 = Task.Factory.StartNew(() =>
             {
                 try { Thread.CurrentThread.Name = $"Copy big file low priority"; }
@@ -251,7 +251,7 @@ namespace System.IO.NG.Tests
                 while (keepCopying)
                 {
                     string pathNewCopy = Path.Combine(Path.GetDirectoryName(pathBigFile), $"{Path.GetFileNameWithoutExtension(pathBigFile)}-copy{copyIteration++}.txt");
-                    FileNG.Copy(pathBigFile, pathNewCopy, false, IOPriorityClass.L00_Idle, null, cts.Token);
+                    FileNG.Copy(pathBigFile, pathNewCopy, false, false, IOPriorityClass.L00_Idle, null, cts.Token);
                 }
             });
 

@@ -1,4 +1,5 @@
 using System.Threading;
+using Humanizer.Bytes;
 
 namespace System.IO.NG
 {
@@ -7,5 +8,7 @@ namespace System.IO.NG
         public static bool Exists(this FileInfo fi, IOPriorityClass iopriority = IOPriorityClass.L02_NormalEffort, TimeSpan? timeout = null, CancellationToken? canceltoken = null) => FileNG.Exists(fi.FullName, iopriority, timeout, canceltoken);
 
         public static void Delete(this FileInfo fi, IOPriorityClass iopriority = IOPriorityClass.L02_NormalEffort, TimeSpan? timeout = null, CancellationToken? canceltoken = null) => FileNG.Delete(fi.FullName, iopriority, timeout, canceltoken);
+
+        public static ByteSize GetSize(this FileInfo fi) => ByteSize.FromBytes(fi.Length);
     }
 }
