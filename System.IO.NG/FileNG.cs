@@ -28,7 +28,7 @@ namespace System.IO.NG
             if (pathDstFile.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {pathDstFile}");
             string pathDstDir = Path.GetDirectoryName(pathDstFile);
             if (!DirectoryNG.Exists(pathDstDir, iopriority)) DirectoryNG.CreateDirectory(pathDstDir, iopriority, timeout, canceltoken);
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
                 (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"cp --no-dereference --preserve=links --preserve=all \"{pathSrcFile}\" \"{pathDstFile}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
                 if (!Success) throw new IOException($"Unable to copy file '{pathSrcFile}' to '{pathDstFile}': {StdErr}");
@@ -43,7 +43,7 @@ namespace System.IO.NG
             if (!timeout.HasValue) timeout = DefaultTimeout;
             if (sourceFileName.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {sourceFileName}");
             if (destFileName.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {destFileName}");
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
                 (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"mv {(overwrite ? "-f" : "-n")} \"{sourceFileName}\" \"{destFileName}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
                 if (!Success) throw new IOException($"Unable to move file '{sourceFileName}' to '{destFileName}': {StdErr}");
@@ -57,7 +57,7 @@ namespace System.IO.NG
             Stopwatch sw = Stopwatch.StartNew();
             if (!timeout.HasValue) timeout = DefaultTimeout;
             if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
                 (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"rm \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
                 if (!Success) throw new IOException($"Unable to delete file '{path}': {StdErr}");
@@ -73,7 +73,7 @@ namespace System.IO.NG
             {
                 if (!timeout.HasValue) timeout = DefaultTimeout;
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
-                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
                     // we need to do 'test' twice because 'test -f' would return false on non-regular files, so we use 'test -e' to see if it exists (either as regular, non-regular, or directory) and then exclude directories
                     var cmdIsDirectory = CmdOneLiner.Run($"test -d \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
@@ -93,7 +93,7 @@ namespace System.IO.NG
             Stopwatch sw = Stopwatch.StartNew();
             if (!timeout.HasValue) timeout = DefaultTimeout;
             if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
                 if (path.Contains("\\") || path.Contains("\"")) throw new System.NotImplementedException($"Certain characters not supported.");
                 (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"tee \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true, StdIn: contents);
@@ -111,7 +111,7 @@ namespace System.IO.NG
             Stopwatch sw = Stopwatch.StartNew();
             if (!timeout.HasValue) timeout = DefaultTimeout;
             if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
                 (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"tee -a \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true, StdIn: contents);
                 if (!Success) throw new IOException($"Error while writing contents to '{path}': {StdErr}");
@@ -129,7 +129,7 @@ namespace System.IO.NG
             {
                 if (!timeout.HasValue) timeout = DefaultTimeout;
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
-                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
                     (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"cat \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
                     if (Success)

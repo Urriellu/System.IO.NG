@@ -9,7 +9,7 @@ namespace System.IO.NG
         /// Delete all files and subdirectories, but keep the directory itself, emptied.
         /// </summary>
         /// <param name="di"></param>
-        public static void DeleteAllContents(this DirectoryInfo di, IOPriorityClass iopriority) => DirectoryNG.DeleteAllContents(di.FullName, iopriority: iopriority);
+        public static void DeleteAllContents(this DirectoryInfo di, IOPriorityClass iopriority) => DirectoryNG.Delete(di.FullName, recursive: true, iopriority: iopriority);
 
         public static void Delete(this DirectoryInfo di, bool recursive = false, IOPriorityClass iopriority = IOPriorityClass.L02_NormalEffort, TimeSpan? timeout = null, CancellationToken? canceltoken = null) => DirectoryNG.Delete(di.FullName, recursive, iopriority, timeout, canceltoken);
 

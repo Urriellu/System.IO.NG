@@ -28,5 +28,8 @@ namespace System.IO.NG
             Statistics.IncreaseValue($"StrgUse/Stack/{stackTrace}/Calls");
             Statistics.IncreaseValue($"StrgUse/Stack/{stackTrace}/TotalTimeMs", elapsed.Milliseconds);
         }
+
+        internal static ProcessPriorityClass ProcessPriority => _processPriority ??= Process.GetCurrentProcess().PriorityClass;
+        static ProcessPriorityClass? _processPriority;
     }
 }
