@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <Title>System.IO, New Generation</Title>
     <Authors>Adrian Bulnes</Authors>
     <Description>Adds timeout, asynchronous cancellation, and Disk I/O (not CPU) Prioritization to File and Directory read/write operations on Linux.
@@ -22,8 +22,6 @@ It also solves Directory.Move() not working on Linux when source and destination
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CmdOneLiner.NET\CmdOneLiner.NET\CmdOneLiner.NET.csproj" />
-    <ProjectReference Include="..\..\Statistics\Statistics.csproj" />
   </ItemGroup>
 
 </Project>
