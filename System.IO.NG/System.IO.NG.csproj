@@ -3,26 +3,24 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <Title>System.IO, New Generation</Title>
-    <Authors>Adrian Bulnes</Authors>
+    <Authors>Adrian B. [Urriellu]</Authors>
     <Description>Adds timeout, asynchronous cancellation, and Disk I/O (not CPU) Prioritization to File and Directory read/write operations on Linux.
 
 On Windows, it transparently performs File/Directory operations ignoring timeouts/cancellation/priorities (same as System.IO).
 
 It also solves Directory.Move() not working on Linux when source and destination are on different drives/mountpoints.</Description>
-    <Copyright>Adrian Bulnes</Copyright>
+    <Copyright>Adrian B. [Urriellu]</Copyright>
     <PackageProjectUrl>https://github.com/Urriellu/System.IO.NG</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Urriellu/System.IO.NG/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Urriellu/System.IO.NG</RepositoryUrl>
     <PackageTags>io, disk, file, directory, linux</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CmdOneLiner.NET" Version="1.0.3" />
     <PackageReference Include="Humanizer.Core" Version="2.11.10" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\CmdOneLiner.NET\CmdOneLiner.NET\CmdOneLiner.NET.csproj" />
-    <ProjectReference Include="..\..\Statistics\Statistics.csproj" />
+    <PackageReference Include="Stats.NET" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
