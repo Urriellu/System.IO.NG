@@ -30,8 +30,8 @@ namespace System.IO.NG
             if (!DirectoryNG.Exists(pathDstDir, iopriority)) DirectoryNG.CreateDirectory(pathDstDir, iopriority, timeout, canceltoken);
             if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
-                (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"cp --no-dereference --preserve=links --preserve=all \"{pathSrcFile}\" \"{pathDstFile}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                if (!Success) throw new IOException($"Unable to copy file '{pathSrcFile}' to '{pathDstFile}': {StdErr}");
+                (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"cp -rP \"{pathSrcFile}\" \"{pathDstFile}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                if (!Success && canceltoken?.IsCancellationRequested == false) throw new IOException($"Unable to copy file '{pathSrcFile}' to '{pathDstFile}': {StdErr}");
             }
             else File.Copy(pathSrcFile, pathDstFile, overwrite);
             StorageNG.RecordStatistics(sw.Elapsed);

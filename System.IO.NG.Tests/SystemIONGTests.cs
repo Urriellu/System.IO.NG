@@ -149,8 +149,7 @@ namespace System.IO.NG.Tests
                 string[] filesInSubDirBeforeEmptying = DirectoryNG.GetFiles(pathSubDir);
                 Assert.IsTrue(filesInSubDirBeforeEmptying.Length >= 1);
                 DirectoryNG.Delete(pathSubDir, recursive: true);
-                string[] filesInSubDirAfterEmptying = DirectoryNG.GetFiles(pathSubDir);
-                Assert.AreEqual(0, filesInSubDirAfterEmptying.Length);
+                Assert.IsFalse(DirectoryNG.Exists(pathSubDir));
             }
 
             // TEST DELETING DIRECTORIES AND SUBDIRECTORIES
