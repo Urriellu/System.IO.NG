@@ -14,7 +14,8 @@ It also solves Directory.Move() not working on Linux when source and destination
     <PackageLicenseUrl>https://github.com/Urriellu/System.IO.NG/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Urriellu/System.IO.NG</RepositoryUrl>
     <PackageTags>io, disk, file, directory, linux</PackageTags>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
+    <PackageId>Sys.IO.NG</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
