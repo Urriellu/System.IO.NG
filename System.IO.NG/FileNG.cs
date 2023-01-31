@@ -30,8 +30,8 @@ namespace System.IO.NG
             if (!DirectoryNG.Exists(pathDstDir, iopriority)) DirectoryNG.CreateDirectory(pathDstDir, iopriority, timeout, canceltoken);
             if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
-                (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"cp -rP \"{pathSrcFile}\" \"{pathDstFile}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                if (!Success && canceltoken?.IsCancellationRequested == false) throw new IOException($"Unable to copy file '{pathSrcFile}' to '{pathDstFile}': {StdErr}");
+                CmdResult r = CmdOneLiner.Run($"cp -rP \"{pathSrcFile}\" \"{pathDstFile}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                if (!r.Success && canceltoken?.IsCancellationRequested == false) throw new IOException($"Unable to copy file '{pathSrcFile}' to '{pathDstFile}': {r.StdErr}");
             }
             else File.Copy(pathSrcFile, pathDstFile, overwrite);
             StorageNG.RecordStatistics(sw.Elapsed);
@@ -45,8 +45,8 @@ namespace System.IO.NG
             if (destFileName.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {destFileName}");
             if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
-                (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"mv {(overwrite ? "-f" : "-n")} \"{sourceFileName}\" \"{destFileName}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                if (!Success) throw new IOException($"Unable to move file '{sourceFileName}' to '{destFileName}': {StdErr}");
+                CmdResult r = CmdOneLiner.Run($"mv {(overwrite ? "-f" : "-n")} \"{sourceFileName}\" \"{destFileName}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                if (!r.Success) throw new IOException($"Unable to move file '{sourceFileName}' to '{destFileName}': {r.StdErr}");
             }
             else File.Move(sourceFileName, destFileName /*, overwrite*/); // https://docs.microsoft.com/en-us/dotnet/api/system.io.file.move Why is this overload not supported?
             StorageNG.RecordStatistics(sw.Elapsed);
@@ -59,8 +59,8 @@ namespace System.IO.NG
             if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
             if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
-                (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"rm \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                if (!Success) throw new IOException($"Unable to delete file '{path}': {StdErr}");
+                CmdResult r = CmdOneLiner.Run($"rm \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                if (!r.Success) throw new IOException($"Unable to delete file '{path}': {r.StdErr}");
             }
             else File.Delete(path);
             StorageNG.RecordStatistics(sw.Elapsed);
@@ -95,9 +95,9 @@ namespace System.IO.NG
             if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
             if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
-                if (path.Contains("\\") || path.Contains("\"")) throw new System.NotImplementedException($"Certain characters not supported.");
-                (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"tee \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true, StdIn: contents);
-                if (!Success) throw new IOException($"Error while writing contents to '{path}': {StdErr}");
+                if (path.Contains("\\") || path.Contains("\"")) throw new System.NotSupportedException($"Certain characters not supported.");
+                CmdResult r = CmdOneLiner.Run($"tee \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true, stdIn: contents);
+                if (!r.Success) throw new IOException($"Error while writing contents to '{path}': {r.StdErr}");
             }
             else File.WriteAllText(path, contents);
             StorageNG.RecordStatistics(sw.Elapsed);
@@ -113,8 +113,8 @@ namespace System.IO.NG
             if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
             if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
-                (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"tee -a \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true, StdIn: contents);
-                if (!Success) throw new IOException($"Error while writing contents to '{path}': {StdErr}");
+                CmdResult r = CmdOneLiner.Run($"tee -a \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true, stdIn: contents);
+                if (!r.Success) throw new IOException($"Error while writing contents to '{path}': {r.StdErr}");
             }
             else File.AppendAllText(path, contents);
             StorageNG.RecordStatistics(sw.Elapsed);
@@ -131,13 +131,13 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"cat \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (Success)
+                    CmdResult r = CmdOneLiner.Run($"cat \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (r.Success)
                     {
-                        if (StdOut.EndsWith('\r') || StdOut.EndsWith('\n')) return StdOut.Substring(0, StdOut.Length - 1); // since CmdOneLiner reads command stdout line by line, it always adds an extra EOL
-                        else return StdOut;
+                        if (r.StdOut.EndsWith('\r') || r.StdOut.EndsWith('\n')) return r.StdOut.Substring(0, r.StdOut.Length - 1); // since CmdOneLiner reads command stdout line by line, it always adds an extra EOL
+                        else return r.StdOut;
                     }
-                    else throw new IOException($"Error while reading contents of '{path}': {StdErr}");
+                    else throw new IOException($"Error while reading contents of '{path}': {r.StdErr}");
                 }
                 else return File.ReadAllText(path);
             }

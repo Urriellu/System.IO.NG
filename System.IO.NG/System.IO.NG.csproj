@@ -19,7 +19,7 @@ It also solves Directory.Move() not working on Linux when source and destination
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CmdOneLiner.NET" Version="1.0.3" />
+    <PackageReference Include="CmdOneLiner.NET" Version="2.1.0" />
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="Stats.NET" Version="1.0.0" />
   </ItemGroup>

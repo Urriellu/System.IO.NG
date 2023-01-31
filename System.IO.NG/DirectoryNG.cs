@@ -27,8 +27,8 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"test -d \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    return Success;
+                    CmdResult r = CmdOneLiner.Run($"test -d \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    return r.Success;
                 }
                 else return Directory.Exists(path);
             }
@@ -47,9 +47,9 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"mkdir -p \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (Success) return new DirectoryInfo(path);
-                    else throw new IOException($"Unable to create directory '{path}': {StdErr}");
+                    CmdResult r = CmdOneLiner.Run($"mkdir -p \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (r.Success) return new DirectoryInfo(path);
+                    else throw new IOException($"Unable to create directory '{path}': {r.StdErr}");
                 }
                 else return Directory.CreateDirectory(path);
             }
@@ -68,9 +68,9 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"find \"{path}\"{(searchOption == SearchOption.TopDirectoryOnly ? " -maxdepth 1" : "")} -type f -name \"{searchPattern}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (Success) return _parseLinuxFindOutput(path, StdOut);
-                    else throw new IOException($"Unable to list files in directory '{path}': {StdErr}");
+                    CmdResult r = CmdOneLiner.Run($"find \"{path}\"{(searchOption == SearchOption.TopDirectoryOnly ? " -maxdepth 1" : "")} -type f -name \"{searchPattern}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (r.Success) return _parseLinuxFindOutput(path, r.StdOut);
+                    else throw new IOException($"Unable to list files in directory '{path}': {r.StdErr}");
                 }
                 else return Directory.GetFiles(path, searchPattern, searchOption);
             }
@@ -89,9 +89,9 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"find \"{path}\" -maxdepth 1 -type f -name \"{searchPattern}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (Success) return _parseLinuxFindOutput(path, StdOut);
-                    else throw new IOException($"Unable to list files in directory '{path}': {StdErr}");
+                    CmdResult r = CmdOneLiner.Run($"find \"{path}\" -maxdepth 1 -type f -name \"{searchPattern}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (r.Success) return _parseLinuxFindOutput(path, r.StdOut);
+                    else throw new IOException($"Unable to list files in directory '{path}': {r.StdErr}");
                 }
                 else return Directory.GetFiles(path, searchPattern);
             }
@@ -110,9 +110,9 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"find \"{path}\" -maxdepth 1 -type f", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (Success) return _parseLinuxFindOutput(path, StdOut);
-                    else throw new IOException($"Unable to list files in directory '{path}': {StdErr}");
+                    CmdResult r = CmdOneLiner.Run($"find \"{path}\" -maxdepth 1 -type f", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (r.Success) return _parseLinuxFindOutput(path, r.StdOut);
+                    else throw new IOException($"Unable to list files in directory '{path}': {r.StdErr}");
                 }
                 else return Directory.GetFiles(path);
             }
@@ -131,9 +131,9 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"find \"{path}\"{(searchOption == SearchOption.TopDirectoryOnly ? " -maxdepth 1" : "")} -type d -name \"{searchPattern}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (Success) return _parseLinuxFindOutput(path, StdOut);
-                    else throw new IOException($"Unable to list subdirectories of '{path}': {StdErr}");
+                    CmdResult r = CmdOneLiner.Run($"find \"{path}\"{(searchOption == SearchOption.TopDirectoryOnly ? " -maxdepth 1" : "")} -type d -name \"{searchPattern}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (r.Success) return _parseLinuxFindOutput(path, r.StdOut);
+                    else throw new IOException($"Unable to list subdirectories of '{path}': {r.StdErr}");
                 }
                 else return Directory.GetDirectories(path, searchPattern, searchOption);
             }
@@ -152,9 +152,9 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"find \"{path}\" -maxdepth 1 -type d -name \"{searchPattern}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (Success) return _parseLinuxFindOutput(path, StdOut);
-                    else throw new IOException($"Unable to list subdirectories of '{path}': {StdErr}");
+                    CmdResult r = CmdOneLiner.Run($"find \"{path}\" -maxdepth 1 -type d -name \"{searchPattern}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (r.Success) return _parseLinuxFindOutput(path, r.StdOut);
+                    else throw new IOException($"Unable to list subdirectories of '{path}': {r.StdErr}");
                 }
                 else return Directory.GetDirectories(path, searchPattern);
             }
@@ -173,9 +173,9 @@ namespace System.IO.NG
                 if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
                 if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"find \"{path}\" -maxdepth 1 -type d", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (Success) return _parseLinuxFindOutput(path, StdOut);
-                    else throw new IOException($"Unable to list subdirectories of '{path}': {StdErr}");
+                    CmdResult r = CmdOneLiner.Run($"find \"{path}\" -maxdepth 1 -type d", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (r.Success) return _parseLinuxFindOutput(path, r.StdOut);
+                    else throw new IOException($"Unable to list subdirectories of '{path}': {r.StdErr}");
                 }
                 else return Directory.GetDirectories(path);
             }
@@ -200,8 +200,8 @@ namespace System.IO.NG
             if (path.Length > 255) throw new ArgumentOutOfRangeException($"Path too long: {path}");
             if (Environment.OSVersion.Platform == PlatformID.Unix && (iopriority != IOPriorityClass.L02_NormalEffort || Thread.CurrentThread.Priority != ThreadPriority.Normal || StorageNG.ProcessPriority != ProcessPriorityClass.Normal))
             {
-                (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"rmdir \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                if (!Success) throw new IOException($"Unable to delete directory '{path}': {StdErr}");
+                CmdResult r = CmdOneLiner.Run($"rmdir \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                if (!r.Success) throw new IOException($"Unable to delete directory '{path}': {r.StdErr}");
             }
             else Directory.Delete(path);
             StorageNG.RecordStatistics(sw.Elapsed);
@@ -216,8 +216,8 @@ namespace System.IO.NG
             {
                 if (recursive)
                 {
-                    (int ExitCode, bool Success, string StdOut, string StdErr, long? MaxRamUsedBytes, TimeSpan? UserProcessorTime, TimeSpan? TotalProcessorTime) = CmdOneLiner.Run($"rm {(recursive ? "-r" : "")} -f \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
-                    if (!Success) throw new IOException($"Unable to delete directory '{path}': {StdErr}");
+                    CmdResult r = CmdOneLiner.Run($"rm {(recursive ? "-r" : "")} -f \"{path}\"", Environment.CurrentDirectory, timeout, canceltoken, iopriority.GetSimilarProcessPriority(), iopriority, ignoreStatistics: true);
+                    if (!r.Success) throw new IOException($"Unable to delete directory '{path}': {r.StdErr}");
                 }
                 else Delete(path, iopriority, timeout, canceltoken);
             }

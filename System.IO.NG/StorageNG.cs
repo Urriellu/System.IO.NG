@@ -10,7 +10,7 @@ namespace System.IO.NG
         public static void RecordStatistics(TimeSpan elapsed)
         {
             StackTrace trace1 = new StackTrace();
-            MethodBase? caller = trace1.GetFrame(1).GetMethod();
+            MethodBase caller = trace1.GetFrame(1).GetMethod();
             string callerMethod = $"{caller.DeclaringType.Name}.{caller.Name}";
             StackTrace trace2 = new StackTrace(2);
             string stackTrace = trace2.ToString().Replace("\r\n", "\n").Replace("\n\r", "\n").Replace("\r", "\n").Replace("\n", ", ");
